@@ -13,7 +13,16 @@ using Pyrox
     y
 end
 
+# OR.
+
+@pyro function model()
+    x ~ Bernoulli(0.6)
+    y ~ Normal(0.3, 1.0)
+    y
+end
+
 conditioned = condition(model, Dict("y" => 4.0))
 sample = conditioned()
 println(sample)
+
 ```

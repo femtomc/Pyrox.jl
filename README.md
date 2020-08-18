@@ -5,7 +5,7 @@
 A convenient DSL interface to [Pyro](https://pyro.ai/) through [PyCall.jl](https://github.com/JuliaPy/PyCall.jl).
 
 ```julia
-using Pyro
+using Pyrox
 
 @pyro function model()
     x = rand(:x, Bernoulli(0.6))

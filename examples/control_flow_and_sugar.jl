@@ -1,4 +1,4 @@
-module Scratch
+module ControlFlowWithSugar
 
 include("../src/Pyrox.jl")
 using .Pyrox

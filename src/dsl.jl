@@ -12,8 +12,33 @@ function parse_dist(d_expr)
 end
 
 function _pyro(expr)
-    # Transform distribution constructors.
+    
+    # Sugar.
     trans = MacroTools.postwalk(expr) do s
+        if @capture(s, val_ ~ d_)
+
+            # Matches: x ~ distribution.
+            if val isa QuoteNode
+                k = quote rand($val, $d) end
+
+                # Matches: x = (:x => 5) ~ distribution
+            elseif val isa Expr
+                k = quote rand($val, $d) end
+
+                # Matches: x = (:x) ~ distribution
+            else
+                addr = QuoteNode(val)
+                k = quote $val = rand($addr, $d) end
+            end
+
+            k
+        else
+            s
+        end
+    end
+
+    # Transform distribution constructors.
+    trans = MacroTools.postwalk(trans) do s
         if @capture(s, dist_(args__)) && dist in distributions
             new = parse_dist(s)
             new
@@ -57,5 +82,6 @@ end
 
 macro pyro(expr)
     trans = _pyro(expr)
+    println(trans)
     esc(trans)
 end
